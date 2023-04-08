@@ -1,0 +1,7 @@
+{
+  "name": "wifi-connect-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
