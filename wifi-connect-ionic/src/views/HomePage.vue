@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>WiFi POC</ion-title>
+        <ion-title>WiFi Ionic POC</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -13,7 +13,7 @@
 
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">WiFi POC</ion-title>
+          <ion-title size="large">WiFi Ionic POC</ion-title>
         </ion-toolbar>
       </ion-header>
 

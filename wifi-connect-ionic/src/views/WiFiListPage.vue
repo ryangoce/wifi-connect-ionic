@@ -16,11 +16,18 @@
 
     <ion-content :fullscreen="true">
       <ion-list>
-        <ion-item button v-for="(config) in wifiConfigs" :key="config.ssid" @click="connect(config)">
+        <ion-item :detail="config.ssid !== currentlyConnectedSSID" button v-for="(config) in wifiConfigs" :key="config.ssid" @click="connect(config)">
           <ion-label>{{ config.ssid }}</ion-label>
+          <ion-icon v-if="config.ssid === currentlyConnectedSSID" slot="end" :icon="checkmarkDoneCircle"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-content>
+
+    <ion-footer>
+      <ion-toolbar>
+        <ion-title>{{ currentlyConnectedSSID }}</ion-title>
+      </ion-toolbar>
+    </ion-footer>
 
     <ion-loading :is-open="isLoadingOpenRef" message="Connecting..." @didDismiss="showLoading(false)"></ion-loading>
  
@@ -29,7 +36,7 @@
 
 <script setup lang="ts">
 
-import { add } from 'ionicons/icons';
+import { add, checkmarkDoneCircle } from 'ionicons/icons';
 
 import {
   IonContent,
@@ -44,16 +51,26 @@ import {
   IonBackButton,
   IonButton,
   IonIcon,
-  IonLoading
+  IonLoading,
+  IonFooter
 } from '@ionic/vue';
 import { useWiFi, WiFiConfig } from '@/composables/use-wifi';
 import { ConnectionStateValue } from 'wifi-connect';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const isLoadingOpenRef = ref(false)
 const showLoading = (state: boolean) => isLoadingOpenRef.value = state;
 const wifi = useWiFi()
 const wifiConfigs = wifi.wifiConfigs
+
+const currentlyConnectedSSID = computed(() => {
+  const currentSSID = wifi.currentSSID.value
+  if (currentSSID) {
+    return currentSSID
+  } else {
+    return "No connection"
+  }
+})
 
 const connect = async (config: WiFiConfig) => {
   try {
@@ -90,5 +107,8 @@ const connect = async (config: WiFiConfig) => {
     showLoading(false)
   }
 }
+
 wifi.fetchWifiConfigs()
+wifi.fetchCurrentSSID()
+
 </script>

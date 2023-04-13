@@ -5,6 +5,7 @@ import { ConnectionState, ConnectionStateValue, WifiConnect } from 'wifi-connect
 
 const WIFI_CONFIGS_STORAGE_KEY = 'WIFI_CONFIGS_STORAGE_KEY'
 const wifiConfigs: Ref<WiFiConfig[]> = ref([])
+const currentSSID: Ref<string | undefined> = ref(undefined)
 
 async function fetchWifiConfigs() {
   const storage = useStorage()
@@ -16,9 +17,12 @@ async function fetchWifiConfigs() {
   }
 }
 
-async function getCurrentSSID() {
+async function fetchCurrentSSID() {
+  const ssid = await WifiConnect.getCurrentSSID()
 
-  throw new Error('not implemented')
+  if (ssid) {
+    currentSSID.value = ssid.name
+  }
 }
 
 async function addWifiConfig(wifiConfig: WiFiConfig) {
@@ -37,14 +41,22 @@ async function connectToWifi(wifiConfig: WiFiConfig): Promise<ConnectionState> {
     isWep: false
   })
 
+  await fetchCurrentSSID()
+
   return connectionState
+}
+
+async function init() {
+  await fetchCurrentSSID()
 }
 
 export function useWiFi() {
   return {
     wifiConfigs,
+    currentSSID,
+    init,
     fetchWifiConfigs,
-    getCurrentSSID,
+    fetchCurrentSSID,
     addWifiConfig,
     connectToWifi
   }
